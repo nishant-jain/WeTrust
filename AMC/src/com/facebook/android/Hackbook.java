@@ -42,7 +42,7 @@ public class Hackbook extends Activity implements OnItemClickListener {
      * Your Facebook Application ID must be set before running this example See
      * http://www.facebook.com/developers/createapp.php
      */
-    public static final String APP_ID = "163868573752153";
+    public static final String APP_ID = "578112848877498";
 
     private LoginButton mLoginButton;
     private TextView mText;
