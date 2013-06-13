@@ -40,7 +40,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Vector;
 import java.util.regex.Matcher;
@@ -313,16 +316,16 @@ public class GraphExplorer extends Activity {
                 } else {
                     metadataObject = null;
                 }
-                Log.e("original",json.toString(2));
-                Log.e("data",json.names().toString());
+                //Log.e("original",json.toString(2));
+                //Log.e("data",json.names().toString());
                 JSONArray data = json.getJSONArray("data");	
                 
                 //Log.e("tags",tags.names().toString());
-                Log.e("Length",""+data.length());
+                //Log.e("Length",""+data.length());
                 for(int i=0; i<data.length();i++){
                 	JSONObject tags= data.getJSONObject(i);	
                   
-                Log.e("tags",tags.names().toString());
+                	//Log.e("tags",tags.names().toString());
                    	
                    	JSONObject tags_real= tags.getJSONObject("tags");
                    	JSONArray tagsdata=tags_real.getJSONArray("data");
@@ -341,22 +344,24 @@ public class GraphExplorer extends Activity {
                     		count.put(fromid, count.get(fromid)+1 );
                     	}
                     	else{
-                    		count.put(fromid,1);
+                    		count.put(fromid,1);                   		
                     	}
-                		
+                		//connect.add(fromid);
                 		for(int j=0;j<tagsdata.length();j++){
                 			String id=tagsdata.getJSONObject(j).getString("id");
+                			//connect.add(id);
                 			if(count.containsKey(id)){
                         		//int a= Integer.valueOf(count.get(actor_id).toString())+1;
                         		count.put(id, count.get(id)+1 );
                         	}
                         	else{
                         		count.put(id,1);
-                        	}	
+                        	  	}	
                 		}
                 		if(commentdata!=null)
                 		for(int j=0;j<commentdata.length();j++){
                 			String id=commentdata.getJSONObject(j).getJSONObject("from").getString("id");
+                			//connect.add(id);
                 			if(count.containsKey(id)){
                         		//int a= Integer.valueOf(count.get(actor_id).toString())+1;
                         		count.put(id, count.get(id)+1 );
@@ -365,8 +370,17 @@ public class GraphExplorer extends Activity {
                         		count.put(id,1);
                         	}	
                 		}
-                	
-                	}
+                		
+                		
+                		//Iterator one = connect.iterator();
+                		//String res="";
+                		
+                	/*	while(one.hasNext()){
+                			res=one.next().toString();
+                			Log.e("cooccur",res);
+                		}
+                		setText(res);*/
+                	}	
                 	
                 }
                 	Iterator iterator = count.keySet().iterator();  
@@ -377,9 +391,72 @@ public class GraphExplorer extends Activity {
                        result+=key + ":" + value+"\n";
                        System.out.println(key + " " + value);  
                     }  
-                		
-                		
-                	
+               Object[] people= count.keySet().toArray();  //array containing all the unique user ids which interacted with the user
+               /*for(int i=0;i<people.length;i++){
+            	   Log.e("people",people[i].toString());
+               }*/
+              Integer cooccur[][]=new Integer[people.length][people.length];  //the co-occurence matrix
+              for(int j=0;j<people.length;j++)
+            	  for(int k=0;k<people.length;k++)
+            		  cooccur[j][k]=0;
+              Log.e("length of cooccur",""+cooccur.length+"");
+              Log.e("length of people",""+people.length+"");
+              Log.e("length of data",""+data.length()+"");
+              for(int i=0; i<data.length();i++){    //populating the co-occurence matrix
+               	HashSet<String> connect= new HashSet<String>();
+            	JSONObject tags= data.getJSONObject(i);	
+               	JSONObject tags_real= tags.getJSONObject("tags");
+               	JSONArray tagsdata=tags_real.getJSONArray("data");
+                JSONObject comments = tags.optJSONObject("comments");
+                JSONArray commentdata=null;
+
+                if(comments!=null)
+              		 commentdata=comments.getJSONArray("data");
+               	JSONObject from= tags.getJSONObject("from");
+            	String fromid=from.getString("id");
+            	if(tagsdata.length()<8){
+            		connect.add(fromid);
+            		for(int j=0;j<tagsdata.length();j++){
+            			String id=tagsdata.getJSONObject(j).getString("id");
+            			connect.add(id);	
+            		}
+            		if(commentdata!=null)
+            		for(int j=0;j<commentdata.length();j++){
+            			String id=commentdata.getJSONObject(j).getJSONObject("from").getString("id");
+            			connect.add(id);	
+            		}
+            	}	
+            	//Log.e("Connect",(String) connect.toArray()[0]);
+            	Log.e("1st object",people[0].toString());
+            	Object[] new_connect = connect.toArray();
+            	int pos_j=0;
+    			int pos_k=0;
+            	for(int j=0;j<new_connect.length;j++){
+            		for(int k=0;k<new_connect.length;k++){
+            			Log.e("connect values",""+new_connect[j]+","+new_connect[k]);
+            			for(int l=0;l<people.length;l++){
+            				if(new_connect[j].toString().equalsIgnoreCase(people[l].toString()))
+            					pos_j=l;
+            				if(new_connect[k].toString().equalsIgnoreCase(people[l].toString()))
+            					pos_k=l;
+            			}
+            		Log.e("pos_j, pos_k",""+pos_j+","+pos_k);
+            		cooccur[pos_j][pos_k]++;
+            		}
+            		//cooccur[pos_j][pos_k]++;
+            		
+            	}
+            	
+            }
+          	String a="";
+            for(int j=0;j<cooccur.length;j++){
+            	for(int k=0;k<cooccur.length;k++){
+            	
+            		a+=cooccur[j][k].toString()+" ";
+            		
+            	}
+            	a+="\n";
+            }
                 //	String postid= tags_real.getString("post_id");
                 	//post_ids.add(postid);
                 	/*System.out.println(newobj.toString());
@@ -387,7 +464,7 @@ public class GraphExplorer extends Activity {
                 	*/
                 	//System.out.println(tags.toString());
                // }
-                setText(result);
+                setText(a);
             } catch (JSONException e) {
                 setText(e.getMessage());
                 e.printStackTrace();
