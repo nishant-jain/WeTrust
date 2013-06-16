@@ -17,12 +17,15 @@
 package com.facebook.android;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +59,7 @@ public class Hackbook extends Activity implements OnItemClickListener {
     private String graph_or_fql;
 
     private ListView list;
-    String[] main_items = { "Run FQL Query", "Graph API Explorer", "Token Refresh","Call logs" };// "Update Status", "App Requests","Get Friends", "Upload Photo" ,"Place Check-in"
+    String[] main_items = {"Update Status", "Get Friends", "Upload Photo",  "Run FQL Query", "Graph API Explorer", "Token Refresh" };// , "App Requests", ,"Place Check-in"
     String[] permissions = { "offline_access", "publish_stream", "user_photos", "publish_checkins",
             "photo_upload" , "read_stream" , "friends_photos"};
 
@@ -171,7 +174,7 @@ public class Hackbook extends Activity implements OnItemClickListener {
          * https://developers.facebook.com/docs/reference/dialogs/feed/ for more
          * info.
          */
-    /*        case 0: {
+            case 0: {
                 Bundle params = new Bundle();
                 params.putString("caption", getString(R.string.app_name));
                 params.putString("description", getString(R.string.app_desc));
@@ -183,7 +186,7 @@ public class Hackbook extends Activity implements OnItemClickListener {
                 System.out.println(access_token);
                 break;
             }
-*/
+
             /*
              * Source Tag: app_requests Send an app request to friends. If no
              * friend is specified, the user will see a friend selector and will
@@ -192,7 +195,7 @@ public class Hackbook extends Activity implements OnItemClickListener {
              * https://developers.facebook.com/docs/reference/dialogs/requests/
              * for more info.
              */
-  /*          case 1: {
+        /*    case 1: {
                 Bundle params = new Bundle();
                 params.putString("message", getString(R.string.request_message));
                 Utility.mFacebook.dialog(Hackbook.this, "apprequests", params,
@@ -208,7 +211,7 @@ public class Hackbook extends Activity implements OnItemClickListener {
              * Friend table - https://developers.facebook.com/docs/reference/fql/friend/
              * User table - https://developers.facebook.com/docs/reference/fql/user/
              */
-        /*    case 0: {
+            case 1: {
                 if (!Utility.mFacebook.isSessionValid()) {
                     Util.showAlert(this, "Warning", "You must first log in.");
                 } else {
@@ -251,13 +254,13 @@ public class Hackbook extends Activity implements OnItemClickListener {
                 }
                 break;
             }
-*/
+
             /*
              * Source Tag: upload_photo You can upload a photo from the media
              * gallery or from a remote server How to upload photo:
              * https://developers.facebook.com/blog/post/498/
              */
-  /*          case 1: {
+            case 2: {
                 if (!Utility.mFacebook.isSessionValid()) {
                     Util.showAlert(this, "Warning", "You must first log in.");
                 } else {
@@ -280,10 +283,10 @@ public class Hackbook extends Activity implements OnItemClickListener {
                             .setNegativeButton(R.string.remote_button,
                                     new DialogInterface.OnClickListener() {
                                         @Override
-                                        public void onClick(DialogInterface dialog, int which) {*/
+                                        public void onClick(DialogInterface dialog, int which) {
                                             /*
                                              * Source tag: upload_photo_tag
-                                             *//*
+                                             */
                                             Bundle params = new Bundle();
                                             params.putString("url",
                                                     "http://www.facebook.com/images/devsite/iphone_connect_btn.jpg");
@@ -302,7 +305,7 @@ public class Hackbook extends Activity implements OnItemClickListener {
                 }
                 break;
             }
-*/
+
             /*
              * User can check-in to a place, you require publish_checkins
              * permission for that. You can use the default Times Square
@@ -335,7 +338,7 @@ public class Hackbook extends Activity implements OnItemClickListener {
                 break;
             }
 */
-            case 0: {
+            case 3: {
                 if (!Utility.mFacebook.isSessionValid()) {
                     Util.showAlert(this, "Warning", "You must first log in.");
                 } else {
@@ -349,7 +352,7 @@ public class Hackbook extends Activity implements OnItemClickListener {
              * to the www version:
              * http://developers.facebook.com/tools/explorer/
              */
-            case 1: {
+            case 4: {
                 Intent myIntent = new Intent(getApplicationContext(), GraphExplorer.class);
                 if (Utility.mFacebook.isSessionValid()) {
                     Utility.objectID = "me";
@@ -358,17 +361,17 @@ public class Hackbook extends Activity implements OnItemClickListener {
                 break;
             }
 
-            case 2: {
+            case 5: {
                 if(!Utility.mFacebook.isSessionValid()) {
                     Util.showAlert(this, "Warning", "You must first log in.");
                 } else {
                     new TokenRefreshDialog(Hackbook.this).show();
                 }
             }
-            case 3: {
+           // case 6: {
                 /*Intent myIntent = new Intent(getApplicationContext(), call_logs.class);
                 startActivity(myIntent);*/
-            	call_logs a=new call_logs();
+            /*	call_logs a=new call_logs();
             	
             	Context context = getApplicationContext();
             	CharSequence text =a.getCallDetails(); 
@@ -378,7 +381,7 @@ public class Hackbook extends Activity implements OnItemClickListener {
             	toast.show();
             	
                 break;
-            }
+            }*/
         }
     }
 
